@@ -1,0 +1,20 @@
+select * { ?s ?p ?o . } LIMIT 1
+### BENCH DELIMITER ###
+#Chats
+SELECT ?item ?itemLabel
+WHERE
+{
+  ?item wdt:P31 wd:Q146. # <span class="mw-translate-fuzzy">doit avoir comme nature chat</span>
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } # le label viendra de préférence dans votre langue, et autrement en anglais
+}
+### BENCH DELIMITER ###
+#Maires qui sont soit de nature chien, chat ou poulet
+SELECT ?image ?speciesLabel ?mayorLabel ?placeLabel WHERE {
+  VALUES ?species {wd:Q144 wd:Q146 wd:Q780}
+  ?mayor wdt:P31 ?species .
+  ?mayor p:P39 ?node .
+  ?node ps:P39 wd:Q30185 .
+  ?node pq:P642 ?place .
+  OPTIONAL {?mayor wdt:P18 ?image}
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
