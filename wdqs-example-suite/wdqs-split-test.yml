@@ -1,0 +1,57 @@
+datasets:
+  - name: "split"
+    #optional, will just be set in the pre & post script hooks by using {{dataset.file}}
+    #file: "mytest/Q1.txt"
+connections:
+  - name: "baseline"
+    endpoint: "https://query.wikidata.org/sparql"
+  - name: "scholarly_article"
+    endpoint: "https://query.wikidata.org/sparql"
+  - name: "wikidata_main_graph"
+    endpoint: "https://query.wikidata.org/sparql"
+
+tasks:
+  - className: "org.aksw.iguana.cc.tasks.impl.Stresstest"
+    configuration:
+      # ms
+      timeLimit: 10000
+      # warmup is optional
+      warmup:
+        # ms
+        timeLimit: 1000
+        # queryHandler could be set too, same as in the stresstest configuration, otherwise the same queryHandler will be use.
+        # workers are set the same way as in the configuration part
+        workers:
+          - threads: 1
+            className: "SPARQLWorker"
+            queriesFile: "query_set/warmup.txt"
+            timeOut: 60000
+      queryHandler:
+        className: "DelimInstancesQueryHandler"
+        configuration:
+          delim: "### BENCH DELIMITER ###"
+      workers:
+        - threads: 1 # don't want to be throttled
+          className: "SPARQLWorker"
+          queriesFile: "query_set/Q1.txt"
+          timeOut: 60000
+          parameterName: "query"
+          fixedLatency: 500
+
+# both are optional and can be used to load and start as well as stop the connection before and after every task
+#preScriptHook: "./triplestores/{{connection}}/start.sh {{dataset.file}} {{dataset.name}} {{taskID}}"
+#postScriptHook: "./triplestores/{{connection}}/stop.sh"
+
+#optional otherwise the same metrics will be used as default
+metrics:
+  - className: "QMPH"
+  - className: "QPS"
+  - className: "NoQPH"
+  - className: "AvgQPS"
+  - className: "NoQ"
+
+#optional otherwise an nt file will be used
+storages:
+  - className: "NTFileStorage"
+    configuration:
+      fileName: result.nt

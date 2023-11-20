@@ -8,6 +8,11 @@
 
 <img src = "https://github.com/dice-group/IGUANA/raw/develop/images/IGUANA_logo.png" alt = "IGUANA Logo" width = "400" align = "center">
 
+## WMF fork
+
+This project is a fork of the v3 branch of https://github.com/dice-group/IGUANA/.
+The v3 is unmaintained by upstream as they focus on v4 which is major rewrite.
+
 ## ABOUT
 
 
